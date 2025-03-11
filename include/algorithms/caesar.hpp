@@ -7,7 +7,7 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-
+#include "lib/dictionary"
 using namespace std;
 
 class CaesarCipher {
