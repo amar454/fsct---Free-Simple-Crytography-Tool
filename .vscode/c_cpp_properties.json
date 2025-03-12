@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "name": "linux-gcc-x64",
+      "includePath": [
+    "${workspaceFolder}/include",
+    "${workspaceFolder}/src/lib",
+    "${workspaceFolder}/src/ciphers",
+    "${workspaceFolder}/src/client",
+    "/usr/include/c++/11",
+    "/usr/include",
+    "include"
+],
+
+      "defines": [],
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "linux-gcc-x64"
+    }
+  ],
+  "version": 4
+}

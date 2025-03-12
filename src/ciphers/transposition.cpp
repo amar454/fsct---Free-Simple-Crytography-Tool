@@ -1,5 +1,5 @@
-#include "transposition.hpp"
-#include "lib/dictionary.hpp"
+#include "../../include/ciphers/transposition.hpp"
+#include "../../include/dictionary/dictionary.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -7,10 +7,10 @@
 #include <sstream>
 #include <stdexcept>
 
-TranspositionCipher::TranspositionCipher(const std::string& text, Dictionary* dict) 
+Transposition::Transposition(const std::string& text, Dictionary* dict) 
     : plaintext(text), dictionary(dict) {}
 
-std::string TranspositionCipher::encrypt(int key) const {
+std::string Transposition::encrypt(int key) const {
     if (key <= 0) {
         throw std::invalid_argument("Key must be a positive integer.");
     }
@@ -43,7 +43,7 @@ std::string TranspositionCipher::encrypt(int key) const {
     return encryptedText;
 }
 
-std::string TranspositionCipher::decrypt(int key) const {
+std::string Transposition::decrypt(int key) const {
     if (key <= 0) {
         throw std::invalid_argument("Key must be a positive integer.");
     }
@@ -58,6 +58,7 @@ std::string TranspositionCipher::decrypt(int key) const {
 
     int currentChar = 0;
     // Fill the grid column by column with encrypted text
+    std::string encryptedText;
     for (int c = 0; c < numColumns; ++c) {
         for (int r = 0; r < rows; ++r) {
             if (currentChar < len) {
@@ -76,12 +77,12 @@ std::string TranspositionCipher::decrypt(int key) const {
     return decryptedText;
 }
 
-bool TranspositionCipher::isValidWord(const std::string& word) const {
+bool Transposition::isValidWord(const std::string& word) const {
     // Check if the word exists in the dictionary
     return dictionary->isInDictionary(word);
 }
 
-void TranspositionCipher::validateText() const {
+void Transposition::validateText() const {
     std::istringstream stream(plaintext);
     std::string word;
     int validCount = 0;
@@ -99,26 +100,26 @@ void TranspositionCipher::validateText() const {
               << validCount << " are valid words from the dictionary." << std::endl;
 }
 
-void TranspositionCipher::setPlaintext(const std::string& text) {
+void Transposition::setPlaintext(const std::string& text) {
     plaintext = text;
 }
 
-std::string TranspositionCipher::getPlaintext() const {
+std::string Transposition::getPlaintext() const {
     return plaintext;
 }
 
-int TranspositionCipher::getKey() const {
+int Transposition::getKey() const {
     return key;
 }
 
-void TranspositionCipher::setKey(int newKey) {
+void Transposition::setKey(int newKey) {
     if (newKey <= 0) {
         throw std::invalid_argument("Key must be a positive integer.");
     }
     key = newKey;
 }
 
-void TranspositionCipher::trimSpaces(std::string& text) const {
+void Transposition::trimSpaces(std::string& text) const {
     // Remove leading and trailing spaces from the string
     size_t start = text.find_first_not_of(" \t\n\r");
     size_t end = text.find_last_not_of(" \t\n\r");
@@ -130,33 +131,52 @@ void TranspositionCipher::trimSpaces(std::string& text) const {
     }
 }
 
-void TranspositionCipher::printEncryptedAndDecryptedText(const std::string& encrypted, const std::string& decrypted) const {
+void Transposition::printEncryptedAndDecryptedText(const std::string& encrypted, const std::string& decrypted) const {
     std::cout << "Encrypted text:\n" << encrypted << std::endl;
     std::cout << "Decrypted text:\n" << decrypted << std::endl;
 }
+void Transposition::suggestDecryptions(int topN, const std::string& analysisMode) const {
+    std::vector<DecryptionResult> results;
 
-int main() {
-    // Load dictionary
-    Dictionary dictionary;
-    if (!dictionary.loadFromFile("path_to_your_dictionary.txt")) {
-        std::cerr << "Failed to load dictionary!" << std::endl;
-        return 1;
+    for (int shift = 0; shift < 26; ++shift) {
+        // Pass the key to the decrypt function
+        std::string decrypted = decrypt(key); // Pass the key here
+        int matchCount = dictionary->countMatches(decrypted);
+
+        double score = matchCount * 5; // Basic score based on dictionary matches
+        double avgWordLength = 0;
+        int commonWordScore = 0;
+
+        if (analysisMode == "advanced") {
+            avgWordLength = dictionary->calculateAverageWordLength(decrypted);
+            commonWordScore = dictionary->scoreCommonWords(decrypted);
+            score += commonWordScore * 3 + avgWordLength * 1.5; // Advanced scoring
+        }
+
+        results.push_back({shift, decrypted, matchCount, avgWordLength, commonWordScore, score});
     }
 
-    std::string plaintext = "This is a test message for transposition cipher.";
-    int key = 5;
+    // Sort results by score (descending)
+    std::sort(results.begin(), results.end(), [](const DecryptionResult& a, const DecryptionResult& b) {
+        return a.score > b.score;
+    });
 
-    TranspositionCipher cipher(plaintext, &dictionary);
-    
-    // Validate plaintext words with dictionary
-    cipher.validateText();
+    // Display results
+    displayResults(results, topN, analysisMode);
+}
+// Display the top N results
+void Transposition::displayResults(const std::vector<DecryptionResult>& results, int topN, const std::string& analysisMode) const {
+    std::cout << "\n=== Suggested Decryptions (" << analysisMode << " mode) ===\n";
 
-    // Encrypt and decrypt
-    std::string encrypted = cipher.encrypt(key);
-    cipher.printEncryptedAndDecryptedText(encrypted, "");
+    for (int i = 0; i < std::min(topN, static_cast<int>(results.size())); ++i) {
+        std::cout << "Shift: " << results[i].shift 
+                  << " | Matches: " << results[i].matchCount;
 
-    std::string decrypted = cipher.decrypt(key);
-    cipher.printEncryptedAndDecryptedText("", decrypted);
+        if (analysisMode == "advanced") {
+            std::cout << " | Avg. Word Length: " << results[i].avgWordLength
+                      << " | Common Words: " << results[i].commonWordScore;
+        }
 
-    return 0;
+        std::cout << "\nDecrypted: " << results[i].decryptedText << "\n\n";
+    }
 }

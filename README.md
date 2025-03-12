@@ -1,7 +1,7 @@
 # fsct - Free Simple Cryptography Tool
 
 ## Description
-The Cipher App is a collection of encryption and decryption algorithms implemented in C++. It includes classical ciphers such as Vigenère, Caesar, Playfair, and Affine. The program allows users to input encrypted text and attempt to decipher it using different cipher algorithms, and it can also suggest the most likely decrypted texts based on common word patterns.
+The Cipher App is a collection of encryption and decryption ciphers implemented in C++. It includes classical ciphers such as Vigenère, Caesar, Playfair, and Affine. The program allows users to input encrypted text and attempt to decipher it using different cipher ciphers, and it can also suggest the most likely decrypted texts based on common word patterns.
 
 ### Supported Ciphers:
 - **Vigenère Cipher**: Decrypts text using the Vigenère encryption technique with a user-supplied key.

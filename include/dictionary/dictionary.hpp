@@ -1,3 +1,12 @@
+/*
+
+    Copyright (c) 2025 Amar Djulovic <aaamargml@gmail.com>
+
+    This file is a part of the 
+*/
+
+
+
 #ifndef DICTIONARY_HPP
 #define DICTIONARY_HPP
 
@@ -19,145 +28,100 @@
  */
 class Dictionary {
 public:
-    /**
-     * @brief Default constructor for Dictionary class.
-     * Initializes the dictionary with a default set of example words.
-     */
     Dictionary();
-
-    /**
-     * @brief Destructor for Dictionary class.
-     * Cleans up any resources used by the Dictionary object.
-     */
     ~Dictionary();
+    // Load a dictionary from a file.
+    bool loadFromFile(const std::string& filename, char delimiter);
 
-    /**
-     * @brief Loads dictionary data from a file.
-     * 
-     * @param filename The path to the dictionary file.
-     * @return true if the file was successfully loaded, false otherwise.
-     */
-    bool loadFromFile(const std::string& filename);
-
-    /**
-     * @brief Checks if a word exists in the dictionary.
-     * 
-     * @param word The word to check for existence.
-     * @return true if the word is found, false otherwise.
-     */
-    bool isInDictionary(const std::string& word) const;
-
-    /**
-     * @brief Adds a word to the dictionary.
-     * 
-     * @param word The word to add.
-     */
+    // add a word to the dictionary
     void addWord(const std::string& word);
 
-    /**
-     * @brief Removes a word from the dictionary.
-     * 
-     * @param word The word to remove.
-     */
+    // remove a word from the dictionary
     void removeWord(const std::string& word);
 
-    /**
-     * @brief Cleans up a word by removing unwanted characters (e.g., punctuation).
-     * 
-     * @param word The word to clean.
-     * @return The cleaned word.
-     */
-    std::string cleanWord(const std::string& word) const;
-
-    /**
-     * @brief Displays all words in the dictionary.
-     */
+    // print the dictionary to cout 
     void displayDictionary() const;
 
-    /**
-     * @brief Clears all words from the dictionary.
-     */
+    // clear the dictionary
     void clearDictionary();
 
-    /**
-     * @brief Counts the number of matches of dictionary words in a given text.
-     * 
-     * @param text The text to analyze.
-     * @return The number of dictionary words found in the text.
-     */
-    int countMatches(const std::string& text) const;
+    // check if a word is in the dictionary
+    bool isInDictionary(const std::string& word) const;
 
-    /**
-     * @brief Extracts all words from a given text.
-     * 
-     * @param text The input text.
-     * @return A set of words found in the text.
-     */
+    //  clean a word by removing non-alphabetic characters
+    std::string cleanWord(const std::string& word) const;
+
+    // use the Levenshtein distance algorithm to find the closest match for a word
+    int levenshteinDistance(const std::string& a, const std::string& b) const;
+
+    // extract words from a text
     std::unordered_set<std::string> extractWords(const std::string& text) const;
 
-    /**
-     * @brief Finds the most frequent word in a given text.
-     * 
-     * @param text The text to analyze.
-     * @return The most frequent word in the text.
-     */
-    std::string getMostFrequentWord(const std::string& text) const;
-
-    /**
-     * @brief Returns a map of word frequencies in the given text.
-     * 
-     * @param text The input text.
-     * @return A map of words and their frequencies.
-     */
+    // get the frequency of each word in a text
     std::unordered_map<std::string, int> getWordFrequency(const std::string& text) const;
 
-    /**
-     * @brief Returns the top N most frequent words in the given text.
-     * 
-     * @param text The input text.
-     * @param N The number of top frequent words to return.
-     * @return A list of the top N most frequent words.
-     */
-    std::vector<std::string> getTopNFrequentWords(const std::string& text, int N) const;
+    // get the most frequent word in a text
+    std::string getMostFrequentWord(const std::string& text) const;
 
-    /**
-     * @brief Suggests corrections for a given word based on the dictionary.
-     * 
-     * @param word The word for which corrections are suggested.
-     * @return A list of suggested corrections.
-     */
+    // get the top N most frequent words in a text
+    std::vector<std::string> getTopNFrequentWords(const std::string& text, int N) const;
+    
+    // count the number of matches in a text
+    int countMatches(const std::string& text) const;
+    
+    // return the number of words in the dictionary
+    int size() const;
+
+    // return the longest word in the dictionary
+    std::string getLongestWord() const;
+
+    // return the shortest word in the dictionary
+    std::string getShortestWord() const;
+
+    // return true if the word is a palindrome
+    bool isPalindrome(const std::string& word) const;
+
+    // return a list of palindromic words in the dictionary
+    std::vector<std::string> getPalindromicWords() const;
+
+    // suggesst corrections for a word
     std::vector<std::string> suggestCorrections(const std::string& word) const;
 
-    /**
-     * @brief Finds the longest common prefix for a word in the dictionary.
-     * 
-     * @param word The word to check.
-     * @return The longest common prefix.
-     */
-    std::string longestPrefix(const std::string& word) const;
+    // return a list of anagrams for a word
+    std::vector<std::string> findAnagrams(const std::string& word) const;
 
-    /**
-     * @brief Suggests words from the dictionary that start with a given prefix.
-     * 
-     * @param prefix The prefix to search for.
-     * @return A list of words that start with the given prefix.
-     */
+    // Suggest words by reversing the word and checking if it exists in the dictionary
+    std::vector<std::string> suggestByReversal(const std::string& word) const;
+
+    // Identify quadrigrams in a text and return their frequency
+    std::unordered_map<std::string, int> quadgramFrequency(const std::string& text) const;
+    
+    // Identify trigrams in a text and return their frequency
+    std::unordered_map<std::string, int> trigramFrequency(const std::string& text) const;
+
+    // Identify bigrams in a text and return their frequency
+    std::unordered_map<std::string, int> bigramFrequency(const std::string& text) const;
+
+    // identify n grams in a text and return their frequency
+    double ngramEntropy(const std::string& text, int n) const;
+    
+    // Calculate the index of coincidence for a given text, over substrings of length substringLength
+    double indexOfCoincidenceOverSubstrings(const std::string& text, int substringLength) const;
+    
+    // Calculate the index of coincidence for a given text, over substrings of length 3
     std::vector<std::string> suggestByPrefix(const std::string& prefix) const;
 
-    /**
-     * @brief Finds common words between two texts.
-     * 
-     * @param text1 The first text.
-     * @param text2 The second text.
-     * @return A set of words that are common in both texts.
-     */
-    std::unordered_set<std::string> getCommonWords(const std::string& text1, const std::string& text2) const;
+    // score the text based on the number of common words
+    int scoreCommonWords(const std::string& text) const;
 
+    double calculateAverageWordLength(const std::string& decryptedText) const;
+
+    double evaluateDecryption(const std::string& decryptedText) const;
 private:
-    std::unordered_set<std::string> dictionary; ///< The set containing all dictionary words.
+    std::unordered_set<std::string> dictionary;
     
     /// Example set of words to initialize the dictionary with.
-    const std::vector<std::string> exampleWords = {
+    const std::vector<std::string> predefinedDictionary = {
         "a", "ability", "able", "about", "above", "accept", "access", "accident", "according", "account", 
         "achieve", "across", "act", "action", "activity", "actor", "actually", "add", "address", "advance", 
         "advice", "affect", "afford", "after", "again", "against", "age", "agency", "air", "all", "allow", "almost", 
@@ -185,7 +149,10 @@ private:
         "system", "talent", "teacher", "theory", "thrive", "throne", "together", "traffic", "transform", "unite", "unique", 
         "universe", "update", "urban", "utilize", "vision", "visible", "vital", "wealth", "weigh", "wellness", "within", 
         "witness", "wonder", "youth", "zeal"
+        
     };
+    
+
 };
 
 #endif // DICTIONARY_HPP
